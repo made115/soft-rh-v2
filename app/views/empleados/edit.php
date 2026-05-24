@@ -43,18 +43,50 @@ $idPuestoSeleccionado = (int) ($old['id_puesto'] ?? $empleado['id_puesto'] ?? 0)
             method="POST"
             action="<?= base_url('empleados/actualizar') ?>"
             x-data='{
-                departamentoSeleccionado: "<?= e((string) $idDepartamentoSeleccionado) ?>",
-                puestoSeleccionado: "<?= e((string) $idPuestoSeleccionado) ?>",
-                puestos: <?= json_encode($puestos, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
+                departamentos: <?= json_encode($departamentos, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+                puestos: <?= json_encode($puestos, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
 
-                puestosFiltrados() {
-                    if (this.departamentoSeleccionado === "") {
+                id_departamento: <?= json_encode((string) $idDepartamentoSeleccionado) ?>,
+                id_puesto: <?= json_encode((string) $idPuestoSeleccionado) ?>,
+
+                departamentoDropdownAbierto: false,
+                puestoDropdownAbierto: false,
+
+                get puestosFiltrados() {
+                    if (this.id_departamento === "") {
                         return [];
                     }
 
-                    return this.puestos.filter(puesto => {
-                        return String(puesto.id_departamento) === String(this.departamentoSeleccionado);
+                    return this.puestos.filter((puesto) => {
+                        return String(puesto.id_departamento) === String(this.id_departamento);
                     });
+                },
+
+                departamentoTexto() {
+                    const departamento = this.departamentos.find((dep) => {
+                        return String(dep.id_departamento) === String(this.id_departamento);
+                    });
+
+                    return departamento ? departamento.nombre_departamento : "Selecciona un departamento";
+                },
+
+                puestoTexto() {
+                    const puesto = this.puestos.find((puesto) => {
+                        return String(puesto.id_puesto) === String(this.id_puesto);
+                    });
+
+                    return puesto ? puesto.nombre_puesto : "Selecciona un puesto";
+                },
+
+                seleccionarDepartamento(idDepartamento) {
+                    this.id_departamento = String(idDepartamento);
+                    this.id_puesto = "";
+                    this.departamentoDropdownAbierto = false;
+                },
+
+                seleccionarPuesto(idPuesto) {
+                    this.id_puesto = String(idPuesto);
+                    this.puestoDropdownAbierto = false;
                 }
             }'
         >
@@ -168,42 +200,78 @@ $idPuestoSeleccionado = (int) ($old['id_puesto'] ?? $empleado['id_puesto'] ?? 0)
                 </div>
 
                 <div class="form-group">
-                    <label for="id_departamento">Departamento</label>
-                    <select
-                        id="id_departamento"
-                        name="id_departamento"
-                        x-model="departamentoSeleccionado"
-                        @change="puestoSeleccionado = ''"
-                        required
-                    >
-                        <option value="">Selecciona un departamento</option>
+                    <label>Departamento</label>
 
-                        <?php foreach ($departamentos as $departamento): ?>
-                            <option value="<?= e((string) $departamento['id_departamento']) ?>">
-                                <?= e($departamento['nombre_departamento']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input
+                        type="hidden"
+                        name="id_departamento"
+                        x-model="id_departamento"
+                    >
+
+                    <div class="custom-select form-custom-select" @click.outside="departamentoDropdownAbierto = false">
+                        <button
+                            type="button"
+                            class="custom-select-button"
+                            @click="departamentoDropdownAbierto = !departamentoDropdownAbierto"
+                        >
+                            <span x-text="departamentoTexto()"></span>
+                            <span class="custom-select-arrow">▾</span>
+                        </button>
+
+                        <div
+                            class="custom-select-menu"
+                            x-show="departamentoDropdownAbierto"
+                            x-cloak
+                        >
+                            <?php foreach ($departamentos as $departamento): ?>
+                                <button
+                                    type="button"
+                                    class="custom-select-option"
+                                    @click="seleccionarDepartamento('<?= e((string) $departamento['id_departamento']) ?>')"
+                                >
+                                    <?= e($departamento['nombre_departamento']) ?>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="id_puesto">Puesto</label>
-                    <select
-                        id="id_puesto"
-                        name="id_puesto"
-                        x-model="puestoSeleccionado"
-                        required
-                        :disabled="departamentoSeleccionado === ''"
-                    >
-                        <option value="" x-text="departamentoSeleccionado === '' ? 'Primero selecciona un departamento' : 'Selecciona un puesto'"></option>
+                    <label>Puesto</label>
 
-                        <template x-for="puesto in puestosFiltrados()" :key="puesto.id_puesto">
-                            <option
-                                :value="puesto.id_puesto"
-                                x-text="puesto.nombre_puesto"
-                            ></option>
-                        </template>
-                    </select>
+                    <input
+                        type="hidden"
+                        name="id_puesto"
+                        x-model="id_puesto"
+                    >
+
+                    <div class="custom-select form-custom-select" @click.outside="puestoDropdownAbierto = false">
+                        <button
+                            type="button"
+                            class="custom-select-button"
+                            :class="{ 'custom-select-disabled': id_departamento === '' }"
+                            :disabled="id_departamento === ''"
+                            @click="puestoDropdownAbierto = !puestoDropdownAbierto"
+                        >
+                            <span x-text="id_departamento === '' ? 'Primero selecciona un departamento' : puestoTexto()"></span>
+                            <span class="custom-select-arrow">▾</span>
+                        </button>
+
+                        <div
+                            class="custom-select-menu"
+                            x-show="puestoDropdownAbierto && id_departamento !== ''"
+                            x-cloak
+                        >
+                            <template x-for="puesto in puestosFiltrados" :key="puesto.id_puesto">
+                                <button
+                                    type="button"
+                                    class="custom-select-option"
+                                    @click="seleccionarPuesto(puesto.id_puesto)"
+                                    x-text="puesto.nombre_puesto"
+                                ></button>
+                            </template>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">

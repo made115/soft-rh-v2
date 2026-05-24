@@ -22,8 +22,13 @@ require_once __DIR__ . '/../layouts/private_header.php';
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="<?= base_url('usuarios/guardar') ?>">
+        <form 
+            method="POST" 
+            action="<?= base_url('usuarios/guardar') ?>"
+            x-data="usuarioForm()"
+        >
             <?= csrf_field() ?>
+            <input type="hidden" name="estado" value="activo">
 
             <div class="form-grid">
                 <div class="form-group">
@@ -50,34 +55,6 @@ require_once __DIR__ . '/../layouts/private_header.php';
                 </div>
 
                 <div class="form-group">
-                    <label for="id_rol">Rol</label>
-                    <select id="id_rol" name="id_rol" required>
-                        <option value="">Selecciona un rol</option>
-
-                        <?php foreach ($roles as $rol): ?>
-                            <option
-                                value="<?= e((string) $rol['id_rol']) ?>"
-                                <?= ((int) ($old['id_rol'] ?? 0) === (int) $rol['id_rol']) ? 'selected' : '' ?>
-                            >
-                                <?= e($rol['nombre_rol']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="estado">Estado</label>
-                    <select id="estado" name="estado" required>
-                        <option value="activo" <?= (($old['estado'] ?? 'activo') === 'activo') ? 'selected' : '' ?>>
-                            Activo
-                        </option>
-                        <option value="inactivo" <?= (($old['estado'] ?? '') === 'inactivo') ? 'selected' : '' ?>>
-                            Inactivo
-                        </option>
-                    </select>
-                </div>
-
-                <div class="form-group">
                     <label for="contrasena">Contraseña temporal</label>
                     <input
                         type="password"
@@ -98,6 +75,43 @@ require_once __DIR__ . '/../layouts/private_header.php';
                         required
                     >
                 </div>
+
+                <div class="form-group">
+                    <label>Rol</label>
+
+                    <input
+                        type="hidden"
+                        name="id_rol"
+                        x-model="id_rol"
+                    >
+
+                    <div class="custom-select form-custom-select" @click.outside="rolDropdownAbierto = false">
+                        <button
+                            type="button"
+                            class="custom-select-button"
+                            @click="rolDropdownAbierto = !rolDropdownAbierto"
+                        >
+                            <span x-text="rolTexto()"></span>
+                            <span class="custom-select-arrow">▾</span>
+                        </button>
+
+                        <div
+                            class="custom-select-menu"
+                            x-show="rolDropdownAbierto"
+                            x-cloak
+                        >
+                            <?php foreach ($roles as $rol): ?>
+                                <button
+                                    type="button"
+                                    class="custom-select-option"
+                                    @click="seleccionarRol('<?= e((string) $rol['id_rol']) ?>')"
+                                >
+                                    <?= e($rol['nombre_rol']) ?>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="form-actions">
@@ -107,5 +121,30 @@ require_once __DIR__ . '/../layouts/private_header.php';
         </form>
     </div>
 </section>
+
+<script>
+    function usuarioForm() {
+        return {
+            roles: <?= json_encode($roles, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+
+            id_rol: <?= json_encode((string) ($old['id_rol'] ?? '')) ?>,
+
+            rolDropdownAbierto: false,
+
+            rolTexto() {
+                const rol = this.roles.find((rol) => {
+                    return String(rol.id_rol) === String(this.id_rol);
+                });
+
+                return rol ? rol.nombre_rol : 'Selecciona un rol';
+            },
+
+            seleccionarRol(idRol) {
+                this.id_rol = String(idRol);
+                this.rolDropdownAbierto = false;
+            }
+        };
+    }
+</script>
 
 <?php require_once __DIR__ . '/../layouts/private_footer.php'; ?>

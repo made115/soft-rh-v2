@@ -13,17 +13,48 @@ require_once __DIR__ . '/../layouts/private_header.php';
         return {
             departamentos: <?= json_encode($departamentos, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
             puestos: <?= json_encode($puestos, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+
             id_departamento: <?= json_encode((string) ($old['id_departamento'] ?? '')) ?>,
             id_puesto: <?= json_encode((string) ($old['id_puesto'] ?? '')) ?>,
 
+            departamentoDropdownAbierto: false,
+            puestoDropdownAbierto: false,
+
             get puestosFiltrados() {
+                if (this.id_departamento === '') {
+                    return [];
+                }
+
                 return this.puestos.filter((puesto) => {
                     return String(puesto.id_departamento) === String(this.id_departamento);
                 });
             },
 
-            limpiarPuesto() {
+            departamentoTexto() {
+                const departamento = this.departamentos.find((dep) => {
+                    return String(dep.id_departamento) === String(this.id_departamento);
+                });
+
+                return departamento ? departamento.nombre_departamento : 'Selecciona un departamento';
+            },
+
+            puestoTexto() {
+                const puesto = this.puestos.find((puesto) => {
+                    return String(puesto.id_puesto) === String(this.id_puesto);
+                });
+
+                return puesto ? puesto.nombre_puesto : 'Selecciona un puesto';
+            },
+
+            seleccionarDepartamento(idDepartamento) {
+                this.id_departamento = String(idDepartamento);
                 this.id_puesto = '';
+                this.departamentoDropdownAbierto = false;
+            },
+
+            seleccionarPuesto(idPuesto) {
+                this.id_puesto = String(idPuesto);
+                this.puestoDropdownAbierto = false;
             }
         };
     }
@@ -150,42 +181,78 @@ require_once __DIR__ . '/../layouts/private_header.php';
                 </div>
 
                 <div class="form-group">
-                    <label for="id_departamento">Departamento</label>
-                    <select
-                        id="id_departamento"
+                    <label>Departamento</label>
+
+                    <input
+                        type="hidden"
                         name="id_departamento"
                         x-model="id_departamento"
-                        @change="limpiarPuesto()"
-                        required
                     >
-                        <option value="">Selecciona un departamento</option>
 
-                        <?php foreach ($departamentos as $departamento): ?>
-                            <option value="<?= e((string) $departamento['id_departamento']) ?>">
-                                <?= e($departamento['nombre_departamento']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="custom-select form-custom-select" @click.outside="departamentoDropdownAbierto = false">
+                        <button
+                            type="button"
+                            class="custom-select-button"
+                            @click="departamentoDropdownAbierto = !departamentoDropdownAbierto"
+                        >
+                            <span x-text="departamentoTexto()"></span>
+                            <span class="custom-select-arrow">▾</span>
+                        </button>
+
+                        <div
+                            class="custom-select-menu"
+                            x-show="departamentoDropdownAbierto"
+                            x-cloak
+                        >
+                            <?php foreach ($departamentos as $departamento): ?>
+                                <button
+                                    type="button"
+                                    class="custom-select-option"
+                                    @click="seleccionarDepartamento('<?= e((string) $departamento['id_departamento']) ?>')"
+                                >
+                                    <?= e($departamento['nombre_departamento']) ?>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="id_puesto">Puesto</label>
-                    <select
-                        id="id_puesto"
+                    <label>Puesto</label>
+
+                    <input
+                        type="hidden"
                         name="id_puesto"
                         x-model="id_puesto"
-                        :disabled="id_departamento === ''"
-                        required
                     >
-                        <option value="">Selecciona un puesto</option>
 
-                        <template x-for="puesto in puestosFiltrados" :key="puesto.id_puesto">
-                            <option
-                                :value="puesto.id_puesto"
-                                x-text="puesto.nombre_puesto"
-                            ></option>
-                        </template>
-                    </select>
+                    <div class="custom-select form-custom-select" @click.outside="puestoDropdownAbierto = false">
+                        <button
+                            type="button"
+                            class="custom-select-button"
+                            :class="{ 'custom-select-disabled': id_departamento === '' }"
+                            :disabled="id_departamento === ''"
+                            @click="puestoDropdownAbierto = !puestoDropdownAbierto"
+                        >
+                            <span x-text="id_departamento === '' ? 'Primero selecciona un departamento' : puestoTexto()"></span>
+                            <span class="custom-select-arrow">▾</span>
+                        </button>
+
+                        <div
+                            class="custom-select-menu"
+                            x-show="puestoDropdownAbierto && id_departamento !== ''"
+                            x-cloak
+                        >
+                            <template x-for="puesto in puestosFiltrados" :key="puesto.id_puesto">
+                                <button
+                                    type="button"
+                                    class="custom-select-option"
+                                    @click="seleccionarPuesto(puesto.id_puesto)"
+                                    x-text="puesto.nombre_puesto"
+                                ></button>
+                            </template>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-info form-full">
