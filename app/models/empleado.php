@@ -365,6 +365,52 @@ class Empleado
             $stmtBitacora->bindValue(':id_usuario', $id_usuario_accion, PDO::PARAM_INT);
             $stmtBitacora->execute();
 
+            $stmtContratoVigente = $this->db->prepare("
+                SELECT id_contrato
+                FROM contratos
+                WHERE id_empleado = :id_empleado
+                AND estado_contrato = 'vigente'
+                ORDER BY fecha_inicio DESC, id_contrato DESC
+                LIMIT 1
+                FOR UPDATE
+            ");
+
+            $stmtContratoVigente->bindValue(':id_empleado', $id_empleado, PDO::PARAM_INT);
+            $stmtContratoVigente->execute();
+
+            $contratoVigente = $stmtContratoVigente->fetch();
+
+            if ($contratoVigente) {
+                $id_contrato = (int) $contratoVigente['id_contrato'];
+
+                $stmtTerminarContrato = $this->db->prepare("
+                    UPDATE contratos
+                    SET estado_contrato = 'terminado'
+                    WHERE id_contrato = :id_contrato
+                    AND estado_contrato = 'vigente'
+                    LIMIT 1
+                ");
+
+                $stmtTerminarContrato->bindValue(':id_contrato', $id_contrato, PDO::PARAM_INT);
+                $stmtTerminarContrato->execute();
+
+                $stmtBitacoraContrato = $this->db->prepare("
+                    INSERT INTO bitacora_contratos (
+                        id_contrato,
+                        id_usuario,
+                        accion
+                    ) VALUES (
+                        :id_contrato,
+                        :id_usuario,
+                        'terminacion_por_baja'
+                    )
+                ");
+
+                $stmtBitacoraContrato->bindValue(':id_contrato', $id_contrato, PDO::PARAM_INT);
+                $stmtBitacoraContrato->bindValue(':id_usuario', $id_usuario_accion, PDO::PARAM_INT);
+                $stmtBitacoraContrato->execute();
+            }
+
             $this->db->commit();
 
             return true;

@@ -156,7 +156,7 @@ class EmpleadoController extends Controller
         try {
             $usuarioSesion = current_user();
 
-            $empleadoModel->create([
+            $id_empleado_creado = $empleadoModel->create([
                 'nombre_empleado' => $nombre_empleado,
                 'apellido_pat_empleado' => $apellido_pat_empleado,
                 'apellido_mat_empleado' => $apellido_mat_empleado,
@@ -171,7 +171,8 @@ class EmpleadoController extends Controller
                 'correo' => $correo !== '' ? $correo : null
             ], (int) $usuarioSesion['id_usuario']);
 
-            $this->redirect('empleados?creado=1');
+            $this->redirect('empleados/detalle?id=' . $id_empleado_creado . '&creado=1&contrato_pendiente=registro');
+
         } catch (Throwable $e) {
             error_log($e->getMessage());
 
@@ -466,6 +467,7 @@ class EmpleadoController extends Controller
         $id_empleado = (int) ($_POST['id_empleado'] ?? 0);
         $accion_estado = $_POST['accion_estado'] ?? '';
         $motivo_baja = trim($_POST['motivo_baja'] ?? '');
+        $contrasena_confirmacion = $_POST['contrasena_confirmacion'] ?? '';
 
         if ($id_empleado <= 0) {
             $this->redirect('empleados');
@@ -491,6 +493,22 @@ class EmpleadoController extends Controller
 
             if (mb_strlen($motivo_baja) < 10 || mb_strlen($motivo_baja) > 255) {
                 $errors[] = 'El motivo de baja debe tener entre 10 y 255 caracteres.';
+            }
+
+            if ($contrasena_confirmacion === '') {
+                $errors[] = 'Debes ingresar tu contraseña para confirmar la inactivación.';
+            } else {
+                $usuarioSesion = current_user();
+                $usuarioModel = new Usuario();
+                $usuarioActual = $usuarioModel->findByIdWithPasswordHash((int) $usuarioSesion['id_usuario']);
+
+                if (
+                    !$usuarioActual ||
+                    empty($usuarioActual['contrasena_hash']) ||
+                    !password_verify($contrasena_confirmacion, $usuarioActual['contrasena_hash'])
+                ) {
+                    $errors[] = 'La contraseña ingresada no es correcta.';
+                }
             }
         } elseif ($accion_estado === 'reactivar') {
             if ($empleado['estado_laboral'] !== 'inactivo') {
@@ -519,7 +537,7 @@ class EmpleadoController extends Controller
 
             if ($accion_estado === 'reactivar') {
                 $empleadoModel->reactivar($id_empleado, $id_usuario_accion);
-                $this->redirect('empleados/detalle?id=' . $id_empleado . '&reactivado=1');
+                $this->redirect('empleados/detalle?id=' . $id_empleado . '&reactivado=1&contrato_pendiente=reactivacion');
             }
         } catch (Throwable $e) {
             error_log($e->getMessage());

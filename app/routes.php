@@ -9,7 +9,6 @@ $router->post('/logout', 'AuthController@logout');
 
 $router->get('/usuarios', 'UsuarioController@index');
 $router->get('/empleados', 'EmpleadoController@index');
-$router->get('/contratos', 'ContratoController@index');
 $router->get('/usuarios/crear', 'UsuarioController@create');
 $router->post('/usuarios/guardar', 'UsuarioController@store');
 $router->get('/usuarios/editar', 'UsuarioController@edit');
@@ -34,3 +33,11 @@ $router->get('/empleados/editar', 'empleadocontroller@edit');
 $router->post('/empleados/actualizar', 'empleadocontroller@update');
 $router->get('/empleados/estado', 'empleadocontroller@estado');
 $router->post('/empleados/actualizar-estado', 'empleadocontroller@actualizarEstado');
+
+$router->get('/contratos', 'ContratoController@index');
+$router->get('/contratos/crear', 'ContratoController@create');
+$router->post('/contratos/guardar', 'ContratoController@store');
+$router->get('/contratos/editar', 'ContratoController@edit');
+$router->post('/contratos/actualizar', 'ContratoController@update');
+$router->get('/contratos/historial', 'ContratoController@historial');
+$router->get('/contratos/movimientos', 'ContratoController@movimientos');

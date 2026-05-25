@@ -114,6 +114,74 @@ function formatoAccionEmpleado(string $accion): string
         </div>
     <?php else: ?>
 
+        <?php if (isset($_GET['creado'])): ?>
+            <div class="alert-success">
+                Empleado registrado correctamente.
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['actualizado'])): ?>
+            <div class="alert-success">
+                Empleado actualizado correctamente.
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['sin_cambios'])): ?>
+            <div class="alert-success">
+                No se realizaron cambios en la información del empleado.
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['inactivado'])): ?>
+            <div class="alert-success">
+                Empleado inactivado correctamente.
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['reactivado'])): ?>
+            <div class="alert-success">
+                Empleado reactivado correctamente.
+            </div>
+        <?php endif; ?>
+
+        <?php if (
+            isset($_GET['contrato_pendiente']) &&
+            in_array($_GET['contrato_pendiente'], ['registro', 'reactivacion'], true) &&
+            $empleado['estado_laboral'] === 'activo'
+        ): ?>
+            <div class="alert-success" style="display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap;">
+                <div>
+                    <strong>
+                        <?= $_GET['contrato_pendiente'] === 'reactivacion'
+                            ? 'Ahora puedes generar el contrato de reingreso.'
+                            : 'Ahora puedes generar el contrato inicial del empleado.' ?>
+                    </strong>
+                    <br>
+                    <span>
+                        También puedes omitir este paso y generarlo después desde Gestión de contratos.
+                    </span>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <a
+                        class="btn btn-primary"
+                        href="<?= base_url('contratos/crear?id_empleado=' . (int) $empleado['id_empleado']) ?>"
+                        style="display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 18px; border-radius: 10px; background: #f59e0b; color: #ffffff; font-weight: 700; text-decoration: none;"
+                    >
+                        Generar contrato
+                    </a>
+
+                    <a
+                        class="btn btn-secondary"
+                        href="<?= base_url('empleados/detalle?id=' . (int) $empleado['id_empleado']) ?>"
+                        style="display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 18px; border-radius: 10px; text-decoration: none;"
+                    >
+                        Omitir por ahora
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div class="detail-header">
             <div>
                 <h2 class="detail-title">

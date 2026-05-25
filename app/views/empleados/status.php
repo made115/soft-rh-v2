@@ -75,7 +75,7 @@ if ($empleado) {
                 <input type="hidden" name="accion_estado" value="inactivar">
 
                 <div class="form-notice">
-                    La fecha de baja se asignará automáticamente con la fecha actual.
+                    La fecha de baja se asignará automáticamente con la fecha actual. El expediente del empleado se conservará en el historial y, si tiene un contrato vigente, este se dará por terminado.
                 </div>
 
                 <div class="form-grid">
@@ -89,6 +89,21 @@ if ($empleado) {
                             required
                             placeholder="Describe el motivo por el cual se inactiva al empleado."
                         ><?= e($_POST['motivo_baja'] ?? '') ?></textarea>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="contrasena_confirmacion">Confirma tu contraseña</label>
+                        <input
+                            type="password"
+                            id="contrasena_confirmacion"
+                            name="contrasena_confirmacion"
+                            autocomplete="current-password"
+                            required
+                            placeholder="Ingresa tu contraseña para confirmar la inactivación"
+                        >
+                        <small class="form-help">
+                            Esta validación confirma que el usuario autorizado desea realizar la baja.
+                        </small>
                     </div>
                 </div>
 
