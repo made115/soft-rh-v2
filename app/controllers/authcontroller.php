@@ -95,6 +95,16 @@ class AuthController extends Controller
         $contrasena = $_POST['contrasena'] ?? '';
         $confirmar_contrasena = $_POST['confirmar_contrasena'] ?? '';
 
+        $usuarioSesion = current_user();
+
+        $usuarioModel = new Usuario();
+        $usuario = $usuarioModel->findByIdWithPasswordHash((int) $usuarioSesion['id_usuario']);
+
+        if (!$usuario) {
+            logout_user();
+            $this->redirect('login');
+        }
+
         $errors = [];
 
         if (strlen($contrasena) < 8) {
@@ -117,6 +127,10 @@ class AuthController extends Controller
             $errors[] = 'Las contraseñas no coinciden.';
         }
 
+        if (!empty($usuario['contrasena_hash']) && password_verify($contrasena, $usuario['contrasena_hash'])) {
+            $errors[] = 'La nueva contraseña debe ser diferente a la contraseña temporal.';
+        }
+
         if (!empty($errors)) {
             $this->view('auth/change_password', [
                 'title' => 'Cambiar contraseña',
@@ -125,9 +139,6 @@ class AuthController extends Controller
             return;
         }
 
-        $usuarioSesion = current_user();
-
-        $usuarioModel = new Usuario();
         $usuarioModel->updateOwnPassword(
             (int) $usuarioSesion['id_usuario'],
             password_hash($contrasena, PASSWORD_DEFAULT)

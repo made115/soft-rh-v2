@@ -239,4 +239,29 @@ class Usuario
 
         return $stmt->execute();
     }
+
+    public function findByIdWithPasswordHash(int $id_usuario): ?array
+    {
+        $sql = "
+            SELECT
+                id_usuario,
+                id_rol,
+                nombre,
+                nombre_usuario,
+                contrasena_hash,
+                estado,
+                requiere_cambio_contrasena
+            FROM usuarios
+            WHERE id_usuario = :id_usuario
+            LIMIT 1
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_usuario', $id_usuario, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $usuario = $stmt->fetch();
+
+        return $usuario ?: null;
+    }
 }
