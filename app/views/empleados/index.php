@@ -211,7 +211,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
             Limpiar
         </button>
 
-        <a class="btn btn-primary" href="<?= base_url('empleados/crear') ?>">
+        <a class="btn btn-warning" href="<?= base_url('empleados/crear') ?>">
             Nuevo empleado
         </a>
     </div>
@@ -287,24 +287,15 @@ require_once __DIR__ . '/../layouts/private_header.php';
 
                             <td>
                                 <div class="table-actions">
-                                    <a 
-                                        class="btn-table" 
-                                        href="<?= base_url('empleados/detalle?id=' . (int) $empleadoItem['id_empleado']) ?>"
-                                    >
+                                    <a class="btn-table btn-table-detail" href="<?= base_url('empleados/detalle?id=' . (int) $empleadoItem['id_empleado']) ?>">
                                         Detalle
                                     </a>
 
-                                    <a 
-                                        class="btn-table" 
-                                        href="<?= base_url('empleados/editar?id=' . (int) $empleadoItem['id_empleado']) ?>"
-                                    >
+                                    <a class="btn-table btn-table-edit" href="<?= base_url('empleados/editar?id=' . (int) $empleadoItem['id_empleado']) ?>">
                                         Editar
                                     </a>
 
-                                    <a 
-                                        class="btn-table" 
-                                        href="<?= base_url('empleados/estado?id=' . (int) $empleadoItem['id_empleado']) ?>"
-                                    >
+                                    <a class="btn-table btn-table-state" href="<?= base_url('empleados/estado?id=' . (int) $empleadoItem['id_empleado']) ?>">
                                         Estado
                                     </a>
                                 </div>

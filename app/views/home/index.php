@@ -1,15 +1,41 @@
 <?php require_once __DIR__ . '/../layouts/private_header.php'; ?>
 
-<h1 class="page-title">Menú del Administrador</h1>
+<?php
+$usuarioActual = current_user();
+$rolActual = $usuarioActual['nombre_rol'] ?? '';
+
+$nombreRolPanel = match ($rolActual) {
+    'administrador' => 'Administrador',
+    'recursos_humanos' => 'Recursos Humanos',
+    'psicologia' => 'Psicología',
+    default => 'Usuario',
+};
+
+$tituloMenu = match ($rolActual) {
+    'administrador' => 'Menú del Administrador',
+    'recursos_humanos' => 'Menú de Recursos Humanos',
+    'psicologia' => 'Menú de Psicología',
+    default => 'Menú principal',
+};
+
+$subtituloPanel = match ($rolActual) {
+    'administrador' => 'Panel del Administrador',
+    'recursos_humanos' => 'Panel de Recursos Humanos',
+    'psicologia' => 'Panel de Psicología',
+    default => 'Panel principal',
+};
+?>
+
+<h1 class="page-title"><?= e($tituloMenu) ?></h1>
 
 <section class="dashboard-welcome">
     <div>
         <h2>Bienvenido, <?= e(current_user()['nombre'] ?? 'Usuario') ?></h2>
-        <p>Panel principal de SOFT RH V2</p>
+        <p><?= e($subtituloPanel) ?></p>
     </div>
 
-    <div class="dashboard-logo">
-        SOFT <span>RH</span>
+    <div class="dashboard-logo-image">
+        <img src="<?= base_url('assets/img/logo-soft-rh.png') ?>" alt="Logo SOFT RH">
     </div>
 </section>
 
@@ -18,7 +44,7 @@
         <div class="metric-icon">👤</div>
         <div>
             <p>Usuarios</p>
-            <h3>0</h3>
+            <h3><?= (int) ($totalUsuarios ?? 0) ?></h3>
         </div>
     </article>
 
@@ -26,7 +52,7 @@
         <div class="metric-icon">👥</div>
         <div>
             <p>Empleados</p>
-            <h3>0</h3>
+            <h3><?= (int) ($totalEmpleados ?? 0) ?></h3>
         </div>
     </article>
 
@@ -34,14 +60,17 @@
         <div class="metric-icon">📄</div>
         <div>
             <p>Contratos</p>
-            <h3>0</h3>
+            <h3><?= (int) ($totalContratos ?? 0) ?></h3>
         </div>
     </article>
 </section>
 
 <section class="dashboard-panel">
     <div class="dashboard-panel-header">
-        <h2>Información de la sesión</h2>
+        <div>
+            <h2>Información importante</h2>
+            <p class="dashboard-panel-subtitle">Resumen general para seguimiento administrativo</p>
+        </div>
 
         <form method="POST" action="<?= base_url('logout') ?>">
             <?= csrf_field() ?>
@@ -49,23 +78,42 @@
         </form>
     </div>
 
-    <div class="table-box dashboard-table-box">
-        <table class="data-table dashboard-table">
-            <tbody>
-                <tr>
-                    <th>Nombre</th>
-                    <td><?= e(current_user()['nombre'] ?? '') ?></td>
-                </tr>
-                <tr>
-                    <th>Usuario</th>
-                    <td><?= e(current_user()['nombre_usuario'] ?? '') ?></td>
-                </tr>
-                <tr>
-                    <th>Rol</th>
-                    <td><?= e(current_user()['nombre_rol'] ?? '') ?></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="important-grid">
+        <article class="important-card">
+            <div class="important-icon">⏳</div>
+            <div>
+                <h3>Contratos próximos a vencer</h3>
+                <p><?= (int) ($contratosProximosVencer ?? 0) ?></p>
+                <span>Vigentes con vencimiento en 15 días o menos</span>
+            </div>
+        </article>
+
+        <article class="important-card">
+            <div class="important-icon">🏖️</div>
+            <div>
+                <h3>Vacaciones próximas a iniciar</h3>
+                <p><?= (int) ($vacacionesProximasIniciar ?? 0) ?></p>
+                <span>Dato simulado para presentación</span>
+            </div>
+        </article>
+
+        <article class="important-card">
+            <div class="important-icon">📅</div>
+            <div>
+                <h3>Vacaciones próximas a terminar</h3>
+                <p><?= (int) ($vacacionesProximasTerminar ?? 0) ?></p>
+                <span>Dato simulado para presentación</span>
+            </div>
+        </article>
+
+        <article class="important-card">
+            <div class="important-icon">🧠</div>
+            <div>
+                <h3>Seguimientos psicológicos sin terminar</h3>
+                <p><?= (int) ($seguimientosSinTerminar ?? 0) ?></p>
+                <span>Dato simulado para presentación</span>
+            </div>
+        </article>
     </div>
 </section>
 

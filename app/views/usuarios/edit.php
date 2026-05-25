@@ -96,9 +96,8 @@ require_once __DIR__ . '/../layouts/private_header.php';
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group usuario-estado-field">
                     <label>Estado</label>
-
                     <input
                         type="hidden"
                         name="estado"

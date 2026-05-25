@@ -72,6 +72,7 @@ class AuthController extends Controller
         logout_user();
 
         $this->redirect('login');
+        exit;
     }
 
     public function changePassword(): void
@@ -147,5 +148,85 @@ class AuthController extends Controller
         mark_password_change_completed();
 
         $this->redirect('/');
+    }
+
+    public function updateAccountPassword(): void
+    {
+        require_auth();
+
+        if (!csrf_validate()) {
+            die('Solicitud no válida.');
+        }
+
+        $contrasena_actual = $_POST['contrasena_actual'] ?? '';
+        $contrasena = $_POST['contrasena'] ?? '';
+        $confirmar_contrasena = $_POST['confirmar_contrasena'] ?? '';
+
+        $usuarioSesion = current_user();
+
+        $usuarioModel = new Usuario();
+        $usuario = $usuarioModel->findByIdWithPasswordHash((int) $usuarioSesion['id_usuario']);
+        $usuarioVista = $usuarioModel->findById((int) $usuarioSesion['id_usuario']);
+
+        if (!$usuario || !$usuarioVista) {
+            logout_user();
+            $this->redirect('login');
+        }
+
+        $errors = [];
+
+        if ($contrasena_actual === '') {
+            $errors[] = 'Debes ingresar tu contraseña actual para confirmar el cambio.';
+        } elseif (!password_verify($contrasena_actual, $usuario['contrasena_hash'])) {
+            $errors[] = 'La contraseña actual no es correcta.';
+        }
+
+        if (strlen($contrasena) < 8) {
+            $errors[] = 'La nueva contraseña debe tener al menos 8 caracteres.';
+        }
+
+        if (!preg_match('/[A-Z]/', $contrasena)) {
+            $errors[] = 'La nueva contraseña debe incluir al menos una letra mayúscula.';
+        }
+
+        if (!preg_match('/[a-z]/', $contrasena)) {
+            $errors[] = 'La nueva contraseña debe incluir al menos una letra minúscula.';
+        }
+
+        if (!preg_match('/[0-9]/', $contrasena)) {
+            $errors[] = 'La nueva contraseña debe incluir al menos un número.';
+        }
+
+        if ($contrasena !== $confirmar_contrasena) {
+            $errors[] = 'La nueva contraseña y la confirmación no coinciden.';
+        }
+
+        if (!empty($usuario['contrasena_hash']) && password_verify($contrasena, $usuario['contrasena_hash'])) {
+            $errors[] = 'La nueva contraseña debe ser diferente a la contraseña actual.';
+        }
+
+        if (!empty($errors)) {
+            $this->view('modulos/mi_cuenta', [
+                'title' => 'Mi cuenta',
+                'usuario' => $usuarioVista,
+                'passwordErrors' => $errors,
+                'passwordSuccess' => null
+            ]);
+            return;
+        }
+
+        $usuarioModel->updateOwnPassword(
+            (int) $usuarioSesion['id_usuario'],
+            password_hash($contrasena, PASSWORD_DEFAULT)
+        );
+
+        mark_password_change_completed();
+
+        $this->view('modulos/mi_cuenta', [
+            'title' => 'Mi cuenta',
+            'usuario' => $usuarioVista,
+            'passwordErrors' => [],
+            'passwordSuccess' => 'La contraseña se actualizó correctamente.'
+        ]);
     }
 }

@@ -45,8 +45,16 @@ class ModuloController extends Controller
     {
         require_auth();
 
+        $usuarioSesion = current_user();
+
+        $usuarioModel = new Usuario();
+        $usuario = $usuarioModel->findById((int) $usuarioSesion['id_usuario']);
+
         $this->view('modulos/mi_cuenta', [
-            'title' => 'Mi cuenta'
+            'title' => 'Mi cuenta',
+            'usuario' => $usuario,
+            'passwordErrors' => [],
+            'passwordSuccess' => null
         ]);
     }
 }

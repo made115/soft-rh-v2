@@ -1,12 +1,21 @@
 <?php
 
 $usuarios = $usuarios ?? [];
+function rol_label(string $rol): string
+{
+    return match ($rol) {
+        'administrador' => 'Administrador',
+        'recursos_humanos' => 'Recursos Humanos',
+        'psicologia' => 'Psicología',
+        default => ucfirst(str_replace('_', ' ', $rol)),
+    };
+}
 
 $rolesFiltro = [];
 
 foreach ($usuarios as $usuarioItem) {
     if (!empty($usuarioItem['nombre_rol'])) {
-        $rolesFiltro[] = $usuarioItem['nombre_rol'];
+        $rolesFiltro[] = rol_label($usuarioItem['nombre_rol']);
     }
 }
 
@@ -33,6 +42,29 @@ require_once __DIR__ . '/../layouts/private_header.php';
         estadoDropdownAbierto: false,
 
         totalCoincidencias: 0,
+        modalEstadoUsuario: {
+            abierto: false,
+            id: '',
+            nombre: '',
+            estado: '',
+            accion: ''
+        },
+
+        abrirModalEstadoUsuario(id, nombre, estado) {
+            this.modalEstadoUsuario.id = id;
+            this.modalEstadoUsuario.nombre = nombre;
+            this.modalEstadoUsuario.estado = estado;
+            this.modalEstadoUsuario.accion = estado === 'activo' ? 'inactivar' : 'activar';
+            this.modalEstadoUsuario.abierto = true;
+        },
+
+        cerrarModalEstadoUsuario() {
+            this.modalEstadoUsuario.abierto = false;
+            this.modalEstadoUsuario.id = '';
+            this.modalEstadoUsuario.nombre = '';
+            this.modalEstadoUsuario.estado = '';
+            this.modalEstadoUsuario.accion = '';
+        },
 
         normalizar(valor) {
             return String(valor ?? '')
@@ -130,6 +162,18 @@ require_once __DIR__ . '/../layouts/private_header.php';
     <?php if (($_GET['error'] ?? '') === 'self_status'): ?>
         <div class="alert-error">
             No puedes cambiar el estado de tu propio usuario mientras tienes la sesión iniciada.
+        </div>
+    <?php endif; ?>
+
+    <?php if (($_GET['error'] ?? '') === 'status_password_required'): ?>
+        <div class="alert-error">
+            Debes ingresar tu contraseña para confirmar la inactivación del usuario.
+        </div>
+    <?php endif; ?>
+
+    <?php if (($_GET['error'] ?? '') === 'status_wrong_password'): ?>
+        <div class="alert-error">
+            La contraseña ingresada no es correcta.
         </div>
     <?php endif; ?>
 
@@ -240,19 +284,19 @@ require_once __DIR__ . '/../layouts/private_header.php';
             Limpiar
         </button>
 
-        <a class="btn btn-primary" href="<?= base_url('usuarios/crear') ?>">
+        <a href="<?= base_url('usuarios/create') ?>" class="btn btn-warning">
             Registrar usuario
         </a>
     </div>
 
     <?php if (!empty($usuarios)): ?>
-        <p class="table-helper" x-show="hayFiltrosActivos()" x-cloak>
+        <p class="table-helper usuarios-results-count" x-show="hayFiltrosActivos()" x-cloak>
             Resultados encontrados: <strong x-text="totalCoincidencias"></strong>
         </p>
     <?php endif; ?>
 
     <div class="table-box">
-        <table class="data-table">
+        <table class="data-table usuarios-table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -260,9 +304,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
                     <th>Usuario</th>
                     <th>Rol</th>
                     <th>Estado</th>
-                    <th>Cambio contraseña</th>
                     <th>Último acceso</th>
-                    <th>Fecha registro</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -270,7 +312,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
             <tbody x-ref="usuariosBody">
                 <?php if (empty($usuarios)): ?>
                     <tr>
-                        <td colspan="9">No hay usuarios registrados.</td>
+                        <td colspan="7">No hay usuarios registrados.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($usuarios as $usuarioItem): ?>
@@ -284,7 +326,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
 
                         <tr
                             data-search="<?= e($textoBusqueda) ?>"
-                            data-rol="<?= e($usuarioItem['nombre_rol']) ?>"
+                            data-rol="<?= e(rol_label($usuarioItem['nombre_rol'])) ?>"
                             data-estado="<?= e($usuarioItem['estado']) ?>"
                             x-show="coincide($el)"
                             x-cloak
@@ -300,7 +342,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
                             </td>
 
                             <td>
-                                <?= e($usuarioItem['nombre_rol']) ?>
+                                <?= e(rol_label($usuarioItem['nombre_rol'])) ?>
                             </td>
 
                             <td>
@@ -312,15 +354,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
                             </td>
 
                             <td>
-                                <?= ((int) $usuarioItem['requiere_cambio_contrasena'] === 1) ? 'Sí' : 'No' ?>
-                            </td>
-
-                            <td>
                                 <?= e($usuarioItem['ultimo_acceso'] ?? 'Sin acceso') ?>
-                            </td>
-
-                            <td>
-                                <?= e($usuarioItem['fecha_registro']) ?>
                             </td>
 
                             <td>
@@ -339,36 +373,88 @@ require_once __DIR__ . '/../layouts/private_header.php';
                                         Contraseña
                                     </a>
 
-                                    <form 
-                                        method="POST" 
-                                        action="<?= base_url('usuarios/cambiar-estado') ?>"
-                                        onsubmit="return confirm('¿Seguro que deseas cambiar el estado de este usuario?');"
+                                    <button
+                                        class="btn-table btn-table-state"
+                                        type="button"
+                                        @click='abrirModalEstadoUsuario(
+                                            <?= (int) $usuarioItem['id_usuario'] ?>,
+                                            <?= json_encode($usuarioItem['nombre'], JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
+                                            <?= json_encode($usuarioItem['estado'], JSON_HEX_APOS | JSON_HEX_QUOT) ?>
+                                        )'
                                     >
-                                        <?= csrf_field() ?>
-
-                                        <input 
-                                            type="hidden" 
-                                            name="id_usuario" 
-                                            value="<?= e((string) $usuarioItem['id_usuario']) ?>"
-                                        >
-
-                                        <button class="btn-table btn-table-state" type="submit">
-                                            <?= $usuarioItem['estado'] === 'activo' ? 'Inactivar' : 'Activar' ?>
-                                        </button>
-                                    </form>
+                                        <?= $usuarioItem['estado'] === 'activo' ? 'Inactivar' : 'Activar' ?>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
 
                     <tr x-show="totalCoincidencias === 0 && hayFiltrosActivos()" x-cloak>
-                        <td colspan="9">
+                        <td colspan="7">
                             No se encontraron usuarios con ese criterio de búsqueda.
                         </td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
+    </div>
+    <div class="modal-overlay" x-show="modalEstadoUsuario.abierto" x-cloak>
+        <div class="modal-card">
+            <h2 x-text="modalEstadoUsuario.accion === 'inactivar' ? 'Inactivar usuario' : 'Activar usuario'"></h2>
+
+            <template x-if="modalEstadoUsuario.accion === 'inactivar'">
+                <div>
+                    <p class="modal-text">
+                        ¿Está seguro que quiere inactivar a este usuario?
+                    </p>
+
+                    <p class="modal-warning">
+                        El usuario ya no tendrá acceso al sistema.
+                    </p>
+                </div>
+            </template>
+
+            <template x-if="modalEstadoUsuario.accion === 'activar'">
+                <p class="modal-text">
+                    ¿Está seguro que quiere activar nuevamente a este usuario?
+                </p>
+            </template>
+
+            <p class="modal-user">
+                Usuario: <strong x-text="modalEstadoUsuario.nombre"></strong>
+            </p>
+
+            <form method="POST" action="<?= base_url('usuarios/cambiar-estado') ?>">
+                <?= csrf_field() ?>
+
+                <input type="hidden" name="id_usuario" :value="modalEstadoUsuario.id">
+
+                <div class="form-group" x-show="modalEstadoUsuario.accion === 'inactivar'">
+                    <label for="contrasena_confirmacion">Confirma tu contraseña</label>
+                    <input
+                        type="password"
+                        id="contrasena_confirmacion"
+                        name="contrasena_confirmacion"
+                        autocomplete="current-password"
+                        :required="modalEstadoUsuario.accion === 'inactivar'"
+                        placeholder="Ingresa tu contraseña para confirmar"
+                    >
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" type="button" @click="cerrarModalEstadoUsuario()">
+                        Cancelar
+                    </button>
+
+                    <button
+                        class="btn"
+                        :class="modalEstadoUsuario.accion === 'inactivar' ? 'btn-danger' : 'btn-warning'"
+                        type="submit"
+                        x-text="modalEstadoUsuario.accion === 'inactivar' ? 'Inactivar usuario' : 'Activar usuario'"
+                    ></button>
+                </div>
+            </form>
+        </div>
     </div>
 </section>
 

@@ -579,163 +579,230 @@ img {
    LOGIN
    ========================================================= */
 
-.login-page {
-    min-height: 100vh;
-    background: var(--gris-fondo);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 24px;
-}
-
-.login-wrapper {
+.login-wrapper.login-v1-wrapper {
     width: 100%;
-    max-width: 1180px;
-    background: var(--blanco);
-    padding: 12px;
-    margin: 0 auto;
-}
-
-/* Compatibilidad con el login inicial dentro de app-container */
-.app-container > .login-wrapper {
     min-height: calc(100vh - 64px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-}
-
-.login-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 680px;
-}
-
-.login-card {
-    background: var(--azul-panel);
-    color: var(--blanco);
-    width: 82%;
-    max-width: 520px;
-    margin: auto;
-    border-radius: 14px;
-    padding: 38px 46px;
-    text-align: center;
-}
-
-.login-logo {
-    background: var(--blanco);
-    color: var(--azul-oscuro);
-    width: 280px;
-    max-width: 100%;
-    margin: 0 auto 18px auto;
-    padding: 22px;
-    font-size: 34px;
-    font-weight: bold;
-}
-
-.login-card h1 {
-    font-size: 28px;
-    margin-bottom: 14px;
-}
-
-.login-card p {
-    font-size: 17px;
-    font-weight: bold;
-    margin-bottom: 32px;
-}
-
-.login-form,
-.login-card {
+    background: #ffffff;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    padding: 28px 20px 0;
+    overflow-x: hidden;
 }
 
-.login-field,
-.login-card label {
+.login-v1-container {
+    width: 100%;
+    max-width: 1460px;
+    margin: 0 auto;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 720px;
+}
+
+.login-v1-left {
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 64px 28px;
+}
+
+.login-v1-card {
+    width: 100%;
+    max-width: 620px;
+    background: #234a7a;
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 40px 58px 42px;
     text-align: center;
 }
 
-.login-field label,
-.login-card label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 12px;
-    font-size: 16px;
-}
-
-.login-field input,
-.login-card input {
-    width: 100%;
-    height: 56px;
-    border: none;
-    border-radius: var(--radio-sm);
-    padding: 0 16px;
-    font-size: 18px;
-}
-
-.login-field input:focus,
-.login-card input:focus {
-    outline: 3px solid #93c5fd;
-}
-
-.password-field {
+.login-v1-logo {
+    width: 350px;
+    max-width: 100%;
+    height: 104px;
+    background: #ffffff;
+    margin: 0 auto 24px;
     display: flex;
-    gap: 8px;
-}
-
-.password-field input {
-    flex: 1;
-}
-
-.password-field button {
-    border: none;
-    border-radius: var(--radio-sm);
-    padding: 0 12px;
-    background: var(--gris-suave);
-    color: var(--texto-principal);
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.login-button,
-.login-card .btn {
-    width: 100%;
-    height: 58px;
-    border: none;
-    border-radius: var(--radio-sm);
-    background: var(--naranja);
-    color: var(--blanco);
-    font-size: 22px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 6px;
-}
-
-.login-button:hover,
-.login-card .btn:hover {
-    background: var(--naranja-hover);
-}
-
-.login-image-box {
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    border-radius: 20px;
     overflow: hidden;
 }
 
-.login-image-box img {
+.login-v1-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.login-v1-card h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 18px;
+    font-weight: 700;
+}
+
+.login-v1-card p {
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 700;
+    margin: 0 0 36px;
+}
+
+.login-v1-alert {
+    width: 100%;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 0 0 24px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.login-v1-alert-success {
+    background: #d8f8e5;
+    color: #006b35;
+}
+
+.login-v1-alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.login-v1-card label {
+    display: block;
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 700;
+    margin: 24px 0 14px;
+    text-align: center;
+}
+
+.login-v1-card input {
+    width: 100%;
+    height: 70px;
+    border: none;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 19px;
+    padding: 0 18px;
+}
+
+.login-v1-card input::placeholder {
+    color: rgba(17, 24, 39, 0.38);
+    opacity: 1;
+}
+
+.login-v1-card input:focus {
+    outline: 3px solid #93c5fd;
+}
+
+.login-v1-button {
+    width: 100%;
+    height: 72px;
+    border: none;
+    border-radius: 9px;
+    background: #ff9f0a;
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 38px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-v1-button:hover {
+    background: #d97706;
+}
+
+.login-v1-image {
+    overflow: hidden;
+    background: #111827;
+}
+
+.login-v1-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-/* Footer del login */
-.login-footer {
-    background: var(--azul-oscuro);
-    color: var(--blanco);
+/* Footer exclusivo del login */
+.login-v1-footer {
+    width: 100%;
+    max-width: 1460px;
+    margin: 0 auto;
+    background: #071f3f;
+    color: #ffffff;
     text-align: center;
-    font-weight: bold;
-    padding: 18px;
-    font-size: 15px;
+    padding: 22px 16px;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+    .login-v1-container {
+    width: calc(100% - 40px);
+    max-width: 1500px;
+    margin: 0 auto;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 0;
+    }
+
+    .login-v1-image {
+        display: none;
+    }
+
+    .login-v1-left {
+        padding: 28px 20px;
+    }
+
+    .login-v1-card {
+        max-width: 620px;
+        padding: 38px 30px;
+    }
+
+    .login-v1-footer {
+    width: calc(100% - 40px);
+    max-width: 1500px;
+    margin: 0 auto;
+    background: #071f3f;
+    color: #ffffff;
+    text-align: center;
+    padding: 22px 16px;
+    font-size: 19px;
+    font-weight: 700;
+    }
+}
+
+@media (max-width: 520px) {
+    .login-v1-card h1 {
+        font-size: 28px;
+    }
+
+    .login-v1-card p {
+        font-size: 17px;
+    }
+
+    .login-v1-logo {
+        width: 270px;
+        height: 90px;
+    }
+
+    .login-v1-card input,
+    .login-v1-button {
+        height: 58px;
+    }
+
+    .login-v1-button {
+        font-size: 22px;
+    }
 }
 
 /* =========================================================
@@ -887,6 +954,64 @@ img {
 
 .dashboard-table {
     min-width: 700px;
+}
+
+.dashboard-panel-subtitle {
+    margin-top: 6px;
+    font-size: 15px;
+    color: #dbeafe;
+    font-weight: 600;
+}
+
+.important-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.important-card {
+    background: var(--blanco);
+    color: var(--texto-principal);
+    border-radius: 16px;
+    padding: 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    box-shadow: var(--sombra-suave);
+    border-left: 8px solid var(--naranja);
+}
+
+.important-icon {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    border-radius: 14px;
+    background: #fef3c7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+}
+
+.important-card h3 {
+    font-size: 17px;
+    color: var(--texto-secundario);
+    margin-bottom: 10px;
+    line-height: 1.25;
+}
+
+.important-card p {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--azul-oscuro);
+    margin-bottom: 6px;
+}
+
+.important-card span {
+    display: block;
+    font-size: 13px;
+    color: var(--texto-muted);
+    line-height: 1.3;
 }
 
 /* =========================================================
@@ -1078,6 +1203,10 @@ img {
     .dashboard-panel-header {
         flex-direction: column;
         gap: 14px;
+    }
+
+    .important-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -1515,21 +1644,20 @@ select:disabled {
 }
 
 .usuarios-search-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: nowrap;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(260px, 1.45fr) minmax(210px, 1fr) minmax(210px, 1fr) minmax(110px, 0.5fr) minmax(110px, 0.5fr) minmax(190px, 0.85fr);
+    gap: 0.9rem;
+    align-items: stretch;
 }
 
-.usuarios-search-bar .search-input {
-    width: 250px;
+.usuarios-search-bar .search-input,
+.usuarios-search-bar .custom-select,
+.usuarios-search-bar .btn {
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
     height: 54px;
-}
-
-.usuarios-search-bar .custom-select {
-    width: 210px;
-    max-width: 100%;
 }
 
 .usuarios-search-bar .custom-select-button {
@@ -1537,25 +1665,780 @@ select:disabled {
 }
 
 .usuarios-search-bar .btn {
-    min-width: 100px;
-    height: 54px;
     justify-content: center;
     padding-left: 1rem;
     padding-right: 1rem;
+    white-space: nowrap;
 }
 
 .usuarios-search-bar .btn-primary {
-    min-width: 150px;
+    min-width: 0;
+}
+
+.usuarios-table {
+    min-width: 980px;
+}
+
+.usuarios-table th:nth-child(1),
+.usuarios-table td:nth-child(1) {
+    width: 70px;
+}
+
+.usuarios-table th:nth-child(2),
+.usuarios-table td:nth-child(2) {
+    width: 240px;
+}
+
+.usuarios-table th:nth-child(3),
+.usuarios-table td:nth-child(3) {
+    width: 170px;
+}
+
+.usuarios-table th:nth-child(4),
+.usuarios-table td:nth-child(4) {
+    width: 180px;
+}
+
+.usuarios-table th:nth-child(5),
+.usuarios-table td:nth-child(5) {
+    width: 120px;
+}
+
+.usuarios-table th:nth-child(6),
+.usuarios-table td:nth-child(6) {
+    width: 170px;
+}
+
+.usuarios-table th:nth-child(7),
+.usuarios-table td:nth-child(7) {
+    width: 370px;
+    min-width: 370px;
+}
+
+@media (max-width: 1250px) {
+    .usuarios-search-bar {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .usuarios-search-bar {
+        grid-template-columns: 1fr;
+    }
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 1000;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--blanco);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: var(--sombra-media);
+}
+
+.modal-card h2 {
+    color: var(--azul-oscuro);
+    font-size: 26px;
+    margin-bottom: 16px;
+}
+
+.modal-text {
+    font-size: 17px;
+    color: var(--texto-principal);
+    margin-bottom: 10px;
+}
+
+.modal-warning {
+    background: #fff7ed;
+    color: #9a3412;
+    border-left: 6px solid var(--naranja);
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.modal-user {
+    color: var(--texto-secundario);
+    margin-bottom: 18px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.usuarios-results-count {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 16px 0 18px;
+}
+
+.usuarios-results-count strong {
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.usuario-estado-field .readonly-input {
+    transform: translateY(-2px);
+}
+
+.usuario-estado-field .form-help {
+    display: block;
+    margin-top: 2px;
+}
+
+.module-actions.empleados-search-bar {
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns:
+        minmax(220px, 1.35fr)
+        minmax(210px, 1.2fr)
+        minmax(200px, 1.1fr)
+        minmax(110px, 0.55fr)
+        minmax(110px, 0.55fr)
+        minmax(170px, 0.75fr);
+    gap: 0.8rem;
+    align-items: stretch;
+}
+
+.module-actions.empleados-search-bar .search-input,
+.module-actions.empleados-search-bar .custom-select,
+.module-actions.empleados-search-bar .btn {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 54px;
+    box-sizing: border-box;
+}
+
+.module-actions.empleados-search-bar .custom-select-button {
+    width: 100%;
+    height: 54px;
+}
+
+.module-actions.empleados-search-bar .btn {
+    justify-content: center;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    white-space: nowrap;
+}
+
+.module-actions.empleados-search-bar .btn-warning {
+    min-width: 0;
+}
+
+@media (max-width: 1250px) {
+    .module-actions.empleados-search-bar {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .module-actions.empleados-search-bar {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Botones de acciones - Empleados */
+.empleados-table .btn-table {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 105px;
+    height: 42px;
+    padding: 0 14px;
+    margin: 0 5px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+/* Detalle y Editar: estilo azul como usuarios */
+.empleados-table .btn-table-detail,
+.empleados-table .btn-table-edit,
+.empleados-table .btn-table-detail:visited,
+.empleados-table .btn-table-edit:visited {
+    background: #dbeafe;
+    color: #0b4fe8;
+    border: 2px solid #dbeafe;
+}
+
+.empleados-table .btn-table-detail:hover,
+.empleados-table .btn-table-edit:hover {
+    background: #bfdbfe;
+    color: #0b4fe8;
+    border-color: #93c5fd;
+}
+
+/* Estado: estilo advertencia como Inactivar */
+.empleados-table .btn-table-state,
+.empleados-table .btn-table-state:visited {
+    background: #fff3c4;
+    color: #a14600;
+    border: 2px solid #111827;
+}
+
+.empleados-table .btn-table-state:hover {
+    background: #ffe8a3;
+    color: #a14600;
+    border-color: #111827;
+}
+
+/* =========================================================
+   DETALLE DE EMPLEADO
+   ========================================================= */
+
+.empleado-detail-page .detail-title {
+    color: #ffffff;
+}
+
+.empleado-detail-page .detail-subtitle {
+    color: #dbeafe;
+    font-weight: 600;
+}
+
+.empleado-detail-page .detail-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+    margin-bottom: 1.8rem;
+}
+
+.empleado-detail-page .detail-section-title {
+    color: #ffffff;
+    font-size: 1.25rem;
+    margin-bottom: 1.2rem;
+}
+
+.empleado-detail-page .detail-grid {
+    gap: 1.35rem 1rem;
+}
+
+.empleado-detail-page .detail-item {
+    padding: 0.75rem 1rem;
+    min-height: 72px;
+}
+
+.empleado-detail-page .detail-item span {
+    margin-bottom: 0.25rem;
+}
+
+.empleado-detail-page .detail-item strong {
+    font-size: 0.95rem;
+}
+
+/* Tabla del historial laboral en detalle */
+.empleado-history-table td {
+    height: 54px;
+    padding: 9px 11px;
+}
+
+.empleado-history-table th {
+    padding: 10px 11px;
+}
+
+.empleado-history-table .motivo-baja-cell {
+    text-align: center !important;
+}
+
+/* Botones finales del detalle */
+.detail-footer-actions {
+    justify-content: center;
+    margin-top: 2rem;
+    gap: 16px;
+}
+
+.detail-footer-btn {
+    min-width: 180px;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.detail-footer-actions .btn-secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.detail-footer-actions .btn-secondary:hover {
+    background: #d1d5db;
+}
+
+.detail-footer-actions .btn-warning {
+    background: var(--naranja);
+    color: #ffffff;
+}
+
+.detail-footer-actions .btn-warning:hover {
+    background: var(--naranja-hover);
+}
+
+.estado-detalle-badge {
+    font-size: 1.35rem !important;
+    padding: 8px 20px !important;
+    border-radius: 999px !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+}
+
+.empleado-edit-note {
+    display: block;
+    margin-bottom: 22px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+/* =========================================================
+   CAMBIAR ESTADO DE EMPLEADO
+   ========================================================= */
+
+.empleado-status-page .detail-title {
+    color: #ffffff;
+    font-size: 1.55rem;
+    font-weight: 800;
+}
+
+.empleado-status-page .detail-subtitle {
+    color: #dbeafe;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.empleado-status-page .detail-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+    margin-bottom: 1.8rem;
+}
+
+.empleado-status-badge {
+    font-size: 1.25rem !important;
+    padding: 8px 20px !important;
+    border-radius: 999px !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+}
+
+.empleado-status-notice {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 24px;
+}
+
+.empleado-status-grid {
+    display: block;
+}
+
+.empleado-status-page .form-group label {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.empleado-status-page textarea {
+    min-height: 125px;
+    resize: vertical;
+}
+
+.empleado-status-actions {
+    margin-top: 30px;
+}
+
+.empleado-status-modal .form-group label {
+    color: var(--texto-principal);
+    font-size: 1rem;
+}
+
+.empleado-status-modal input {
+    height: 52px;
+}
+
+/* Ampliar pantalla de cambiar estado del empleado */
+.form-card-wide.empleado-status-page {
+    width: 100%;
+    max-width: none !important;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.empleado-status-page {
+    width: 100%;
+    max-width: none !important;
+}
+
+.empleado-status-page .form-grid,
+.empleado-status-page .empleado-status-grid {
+    width: 100%;
+}
+
+.empleado-status-page .form-group-full {
+    width: 100%;
+}
+
+.empleado-status-page textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Ajuste de mensajes de error en cambiar estado empleado */
+.empleado-status-page .alert-error {
+    box-sizing: border-box;
+    padding: 18px 28px !important;
+    overflow: hidden;
+}
+
+.empleado-status-page .alert-error ul {
+    margin: 6px 0 0 0;
+    padding-left: 22px;
+}
+
+.empleado-status-page .alert-error li {
+    padding-left: 2px;
+    line-height: 1.25;
+}
+
+/* Ampliar pantalla de editar empleado */
+.form-card-wide.empleado-edit-page {
+    width: 100%;
+    max-width: none !important;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.empleado-edit-page {
+    width: 100%;
+    max-width: none !important;
+}
+
+.empleado-edit-page .form-grid {
+    width: 100%;
+    max-width: none;
+}
+
+.empleado-edit-page .form-group {
+    width: 100%;
+}
+
+.empleado-edit-page input,
+.empleado-edit-page select,
+.empleado-edit-page textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* =========================================================
+   MI CUENTA - AJUSTES
+   ========================================================= */
+
+.account-card-wide {
+    max-width: 1100px;
+}
+
+.account-info-grid-compact {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.account-info-grid-compact .account-info-item {
+    min-height: 74px;
+    padding: 14px 16px;
+}
+
+.account-info-grid-compact .account-info-item span {
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.account-info-grid-compact .account-info-item strong {
+    font-size: 16px;
+}
+
+.account-alert {
+    margin-bottom: 20px;
+}
+
+.account-alert ul {
+    margin: 8px 0 0;
+    padding-left: 22px;
+}
+
+.account-password-form {
+    margin-top: 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    padding-top: 24px;
+}
+
+.account-password-form h3 {
+    color: #ffffff;
+    font-size: 24px;
+    margin-bottom: 18px;
+}
+
+.account-password-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.account-password-form label {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.account-password-form input {
+    height: 54px;
+}
+
+.account-actions-password {
+    gap: 14px;
+}
+
+.account-actions-password .btn {
+    min-width: 190px;
 }
 
 @media (max-width: 1100px) {
-    .usuarios-search-bar {
-        flex-wrap: wrap;
+    .account-info-grid-compact {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .account-info-grid-compact,
+    .account-password-grid {
+        grid-template-columns: 1fr;
     }
 
-    .usuarios-search-bar .search-input,
-    .usuarios-search-bar .custom-select,
-    .usuarios-search-bar .btn {
+    .account-actions-password {
+        flex-direction: column;
+    }
+
+    .account-actions-password .btn {
         width: 100%;
+    }
+}
+
+/* Resumen al reactivar empleado */
+.estado-baja-summary {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.45fr) minmax(420px, 1fr);
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.estado-baja-card {
+    background: #f8fafc;
+    color: var(--texto-principal);
+    border-radius: 14px;
+    padding: 18px 22px;
+    min-height: 88px;
+    border-left: 8px solid var(--naranja);
+    box-shadow: var(--sombra-suave);
+}
+
+.estado-baja-card span {
+    display: block;
+    color: var(--texto-secundario);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.estado-baja-card strong {
+    display: block;
+    font-size: 18px;
+    line-height: 1.35;
+}
+
+.estado-baja-card-wide strong {
+    font-size: 17px;
+}
+
+.empleado-status-actions .btn-warning {
+    background: var(--naranja);
+    color: #ffffff;
+}
+
+.empleado-status-actions .btn-warning:hover {
+    background: var(--naranja-hover);
+}
+
+@media (max-width: 900px) {
+    .estado-baja-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   CONTRATOS - FILTROS Y TABLA
+   ========================================================= */
+
+.module-actions.contratos-search-bar {
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns:
+        minmax(260px, 1.4fr)
+        minmax(230px, 1.1fr)
+        minmax(220px, 1fr)
+        minmax(120px, 0.55fr)
+        minmax(120px, 0.55fr);
+    gap: 0.9rem;
+    align-items: stretch;
+}
+
+.module-actions.contratos-search-bar .search-input,
+.module-actions.contratos-search-bar .custom-select,
+.module-actions.contratos-search-bar .btn {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 54px;
+    box-sizing: border-box;
+}
+
+.module-actions.contratos-search-bar .custom-select-button {
+    width: 100%;
+    height: 54px;
+}
+
+.module-actions.contratos-search-bar .btn {
+    justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    white-space: nowrap;
+}
+
+/* Tabla contratos */
+.contratos-table {
+    min-width: 1120px;
+}
+
+.contratos-table th:nth-child(1),
+.contratos-table td:nth-child(1) {
+    width: 110px;
+}
+
+.contratos-table th:nth-child(2),
+.contratos-table td:nth-child(2) {
+    width: 250px;
+}
+
+.contratos-table th:nth-child(3),
+.contratos-table td:nth-child(3) {
+    width: 140px;
+}
+
+.contratos-table th:nth-child(4),
+.contratos-table td:nth-child(4) {
+    width: 180px;
+}
+
+.contratos-table th:nth-child(5),
+.contratos-table td:nth-child(5) {
+    width: 230px;
+}
+
+.contratos-table th:nth-child(6),
+.contratos-table td:nth-child(6) {
+    width: 480px;
+    min-width: 480px;
+}
+
+.contratos-table td:last-child {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Botones contratos */
+.contratos-table .btn-table,
+.contratos-table .btn-table:visited {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 105px;
+    height: 42px;
+    padding: 0 14px;
+    margin: 0 5px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+/* Renovar, Historial y PDF en azul */
+.contratos-table .btn-table-renew,
+.contratos-table .btn-table-renew:visited,
+.contratos-table .btn-table-history,
+.contratos-table .btn-table-history:visited,
+.contratos-table .btn-table-pdf,
+.contratos-table .btn-table-pdf:visited {
+    background: #dbeafe;
+    color: #0b4fe8;
+    border: 2px solid #dbeafe;
+}
+
+.contratos-table .btn-table-renew:hover,
+.contratos-table .btn-table-history:hover,
+.contratos-table .btn-table-pdf:hover {
+    background: #bfdbfe;
+    color: #0b4fe8;
+    border-color: #93c5fd;
+}
+
+/* Editar en amarillo/naranja */
+.contratos-table .btn-table-edit,
+.contratos-table .btn-table-edit:visited {
+    background: #fff3c4;
+    color: #a14600;
+    border: 2px solid #fff3c4;
+}
+
+.contratos-table .btn-table-edit:hover {
+    background: #ffe8a3;
+    color: #a14600;
+    border-color: #f59e0b;
+}
+
+/* Botones deshabilitados */
+.contratos-table .btn-table-disabled,
+.contratos-table .btn-table-disabled:visited {
+    background: #e5e7eb;
+    color: #6b7280;
+    border: 2px solid #e5e7eb;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+@media (max-width: 1250px) {
+    .module-actions.contratos-search-bar {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .module-actions.contratos-search-bar {
+        grid-template-columns: 1fr;
     }
 }

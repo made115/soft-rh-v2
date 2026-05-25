@@ -494,9 +494,21 @@ class EmpleadoController extends Controller
             if (mb_strlen($motivo_baja) < 10 || mb_strlen($motivo_baja) > 255) {
                 $errors[] = 'El motivo de baja debe tener entre 10 y 255 caracteres.';
             }
+        } elseif ($accion_estado === 'reactivar') {
+            if ($empleado['estado_laboral'] !== 'inactivo') {
+                $errors[] = 'El empleado no se encuentra inactivo.';
+            }
+        } else {
+            $errors[] = 'Acción de estado no válida.';
+        }
 
+        /*
+        * Confirmación de contraseña para cualquier cambio de estado:
+        * inactivar o reactivar.
+        */
+        if (in_array($accion_estado, ['inactivar', 'reactivar'], true)) {
             if ($contrasena_confirmacion === '') {
-                $errors[] = 'Debes ingresar tu contraseña para confirmar la inactivación.';
+                $errors[] = 'Debes ingresar tu contraseña para confirmar el cambio de estado.';
             } else {
                 $usuarioSesion = current_user();
                 $usuarioModel = new Usuario();
@@ -510,12 +522,6 @@ class EmpleadoController extends Controller
                     $errors[] = 'La contraseña ingresada no es correcta.';
                 }
             }
-        } elseif ($accion_estado === 'reactivar') {
-            if ($empleado['estado_laboral'] !== 'inactivo') {
-                $errors[] = 'El empleado no se encuentra inactivo.';
-            }
-        } else {
-            $errors[] = 'Acción de estado no válida.';
         }
 
         if (!empty($errors)) {

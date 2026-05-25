@@ -19,6 +19,29 @@ require_once __DIR__ . '/../layouts/private_header.php';
 
             departamentoDropdownAbierto: false,
             puestoDropdownAbierto: false,
+            sexo: <?= json_encode((string) ($old['sexo'] ?? '')) ?>,
+            sexoDropdownAbierto: false,
+
+            sexoTexto() {
+                if (this.sexo === 'masculino') {
+                    return 'Masculino';
+                }
+
+                if (this.sexo === 'femenino') {
+                    return 'Femenino';
+                }
+
+                if (this.sexo === 'no_especificado') {
+                    return 'No especificado';
+                }
+
+                return 'Selecciona una opción';
+            },
+
+            seleccionarSexo(valor) {
+                this.sexo = valor;
+                this.sexoDropdownAbierto = false;
+            },
 
             get puestosFiltrados() {
                 if (this.id_departamento === '') {
@@ -117,13 +140,54 @@ require_once __DIR__ . '/../layouts/private_header.php';
                 </div>
 
                 <div class="form-group">
-                    <label for="sexo">Sexo</label>
-                    <select id="sexo" name="sexo" required>
-                        <option value="">Selecciona una opción</option>
-                        <option value="masculino" <?= (($old['sexo'] ?? '') === 'masculino') ? 'selected' : '' ?>>Masculino</option>
-                        <option value="femenino" <?= (($old['sexo'] ?? '') === 'femenino') ? 'selected' : '' ?>>Femenino</option>
-                        <option value="no_especificado" <?= (($old['sexo'] ?? '') === 'no_especificado') ? 'selected' : '' ?>>No especificado</option>
-                    </select>
+                    <label>Sexo</label>
+
+                    <input
+                        type="hidden"
+                        name="sexo"
+                        x-model="sexo"
+                    >
+
+                    <div class="custom-select form-custom-select" @click.outside="sexoDropdownAbierto = false">
+                        <button
+                            type="button"
+                            class="custom-select-button"
+                            @click="sexoDropdownAbierto = !sexoDropdownAbierto"
+                        >
+                            <span x-text="sexoTexto()"></span>
+                            <span class="custom-select-arrow">▾</span>
+                        </button>
+
+                        <div
+                            class="custom-select-menu"
+                            x-show="sexoDropdownAbierto"
+                            x-cloak
+                        >
+                            <button
+                                type="button"
+                                class="custom-select-option"
+                                @click="seleccionarSexo('masculino')"
+                            >
+                                Masculino
+                            </button>
+
+                            <button
+                                type="button"
+                                class="custom-select-option"
+                                @click="seleccionarSexo('femenino')"
+                            >
+                                Femenino
+                            </button>
+
+                            <button
+                                type="button"
+                                class="custom-select-option"
+                                @click="seleccionarSexo('no_especificado')"
+                            >
+                                No especificado
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-section-title">

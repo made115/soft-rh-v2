@@ -28,8 +28,8 @@
 
     <div class="app-layout">
         <aside class="app-sidebar">
-            <div class="logo-box">
-                SOFT <span>RH</span>
+            <div class="logo-image-box">
+                <img src="<?= base_url('assets/img/logo-soft-rh.png') ?>" alt="Logo SOFT RH">
             </div>
 
             <nav class="menu">

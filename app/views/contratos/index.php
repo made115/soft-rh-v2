@@ -136,7 +136,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
         </div>
     <?php endif; ?>
 
-    <div class="module-actions empleados-search-bar">
+    <div class="module-actions contratos-search-bar">
         <input
             class="search-input"
             type="text"
@@ -253,7 +253,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
     <?php endif; ?>
 
     <div class="table-box">
-        <table class="data-table">
+        <table class="data-table contratos-table">
             <thead>
                 <tr>
                     <th>ID empleado</th>
@@ -261,7 +261,6 @@ require_once __DIR__ . '/../layouts/private_header.php';
                     <th>Estado laboral</th>
                     <th>Contrato actual</th>
                     <th>Fecha fin</th>
-                    <th>Sueldo diario</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -269,7 +268,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
             <tbody x-ref="contratosBody">
                 <?php if (empty($empleados)): ?>
                     <tr>
-                        <td colspan="7">
+                        <td colspan="6">
                             No hay empleados registrados.
                         </td>
                     </tr>
@@ -352,18 +351,10 @@ require_once __DIR__ . '/../layouts/private_header.php';
                             </td>
 
                             <td>
-                                <?php if ($tieneContratoVigente): ?>
-                                    $<?= e(number_format((float) $empleadoItem['sueldo_diario'], 2)) ?>
-                                <?php else: ?>
-                                    No registrado
-                                <?php endif; ?>
-                            </td>
-
-                            <td>
-                                <div class="table-actions">
+                                <div class="table-actions contratos-actions">
                                     <?php if ($empleadoItem['estado_laboral'] === 'activo'): ?>
                                         <a
-                                            class="btn-table btn-table-edit"
+                                            class="btn-table btn-table-renew"
                                             href="<?= base_url('contratos/crear?id_empleado=' . (int) $empleadoItem['id_empleado']) ?>"
                                         >
                                             <?= $tieneContratoVigente ? 'Renovar' : 'Nuevo' ?>
@@ -375,7 +366,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
                                     <?php endif; ?>
 
                                     <a
-                                        class="btn-table"
+                                        class="btn-table btn-table-history"
                                         href="<?= base_url('contratos/historial?id_empleado=' . (int) $empleadoItem['id_empleado']) ?>"
                                     >
                                         Historial
@@ -383,7 +374,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
 
                                     <?php if ($tieneContratoVigente): ?>
                                         <a
-                                            class="btn-table btn-table-state"
+                                            class="btn-table btn-table-edit"
                                             href="<?= base_url('contratos/editar?id=' . (int) $empleadoItem['id_contrato']) ?>"
                                         >
                                             Editar
@@ -396,7 +387,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
 
                                     <?php if ($tieneContratoVigente): ?>
                                         <a
-                                            class="btn-table btn-table-state"
+                                            class="btn-table btn-table-pdf"
                                             href="<?= base_url('contratos/pdf?id=' . (int) $empleadoItem['id_contrato']) ?>"
                                             title="Generar o descargar PDF del contrato"
                                         >
@@ -413,7 +404,7 @@ require_once __DIR__ . '/../layouts/private_header.php';
                     <?php endforeach; ?>
 
                     <tr x-show="totalCoincidencias === 0 && hayFiltrosActivos()" x-cloak>
-                        <td colspan="7">
+                        <td colspan="6">
                             No se encontraron empleados con ese criterio de búsqueda.
                         </td>
                     </tr>

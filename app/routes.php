@@ -42,3 +42,4 @@ $router->post('/contratos/actualizar', 'ContratoController@update');
 $router->get('/contratos/historial', 'ContratoController@historial');
 $router->get('/contratos/movimientos', 'ContratoController@movimientos');
 $router->get('/contratos/pdf', 'ContratoController@pdf');
+$router->post('/mi-cuenta/actualizar-contrasena', 'AuthController@updateAccountPassword');

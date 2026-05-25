@@ -249,6 +249,7 @@ class UsuarioController extends Controller
         }
 
         $id_usuario = (int) ($_POST['id_usuario'] ?? 0);
+        $contrasena_confirmacion = $_POST['contrasena_confirmacion'] ?? '';
 
         if ($id_usuario <= 0) {
             $this->redirect('usuarios');
@@ -271,6 +272,22 @@ class UsuarioController extends Controller
         }
 
         $nuevoEstado = $usuario['estado'] === 'activo' ? 'inactivo' : 'activo';
+
+        if ($nuevoEstado === 'inactivo') {
+            if ($contrasena_confirmacion === '') {
+                $this->redirect('usuarios?error=status_password_required');
+            }
+
+            $usuarioActual = $usuarioModel->findByIdWithPasswordHash((int) $usuarioSesion['id_usuario']);
+
+            if (
+                !$usuarioActual ||
+                empty($usuarioActual['contrasena_hash']) ||
+                !password_verify($contrasena_confirmacion, $usuarioActual['contrasena_hash'])
+            ) {
+                $this->redirect('usuarios?error=status_wrong_password');
+            }
+        }
 
         $usuarioModel->updateStatus($id_usuario, $nuevoEstado);
 

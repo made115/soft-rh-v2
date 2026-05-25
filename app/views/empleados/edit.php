@@ -15,7 +15,7 @@ $idPuestoSeleccionado = (int) ($old['id_puesto'] ?? $empleado['id_puesto'] ?? 0)
 
 <h1 class="page-title">Editar empleado</h1>
 
-<section class="panel-card form-card-wide">
+<section class="panel-card form-card-wide empleado-edit-page">
     <?php if (!empty($errors)): ?>
         <div class="alert-error">
             <strong>Revisa la información:</strong>
@@ -49,8 +49,32 @@ $idPuestoSeleccionado = (int) ($old['id_puesto'] ?? $empleado['id_puesto'] ?? 0)
                 id_departamento: <?= json_encode((string) $idDepartamentoSeleccionado) ?>,
                 id_puesto: <?= json_encode((string) $idPuestoSeleccionado) ?>,
 
+                sexo: <?= json_encode((string) ($old['sexo'] ?? $empleado['sexo'] ?? '')) ?>,
+
                 departamentoDropdownAbierto: false,
                 puestoDropdownAbierto: false,
+                sexoDropdownAbierto: false,
+
+                sexoTexto() {
+                    if (this.sexo === "masculino") {
+                        return "Masculino";
+                    }
+
+                    if (this.sexo === "femenino") {
+                        return "Femenino";
+                    }
+
+                    if (this.sexo === "no_especificado") {
+                        return "No especificado";
+                    }
+
+                    return "Selecciona una opción";
+                },
+
+                seleccionarSexo(valor) {
+                    this.sexo = valor;
+                    this.sexoDropdownAbierto = false;
+                },
 
                 get puestosFiltrados() {
                     if (this.id_departamento === "") {
@@ -98,9 +122,9 @@ $idPuestoSeleccionado = (int) ($old['id_puesto'] ?? $empleado['id_puesto'] ?? 0)
                 value="<?= e((string) $idEmpleado) ?>"
             >
 
-            <div class="form-notice">
+            <p class="form-help empleado-edit-note">
                 La fecha de ingreso y el estado laboral no se editan desde este formulario.
-            </div>
+            </p>
 
             <div class="form-grid">
                 <div class="form-group">
@@ -115,19 +139,54 @@ $idPuestoSeleccionado = (int) ($old['id_puesto'] ?? $empleado['id_puesto'] ?? 0)
                 </div>
 
                 <div class="form-group">
-                    <label for="sexo">Sexo</label>
-                    <select id="sexo" name="sexo" required>
-                        <option value="">Selecciona una opción</option>
-                        <option value="masculino" <?= (($old['sexo'] ?? '') === 'masculino') ? 'selected' : '' ?>>
-                            Masculino
-                        </option>
-                        <option value="femenino" <?= (($old['sexo'] ?? '') === 'femenino') ? 'selected' : '' ?>>
-                            Femenino
-                        </option>
-                        <option value="no_especificado" <?= (($old['sexo'] ?? '') === 'no_especificado') ? 'selected' : '' ?>>
-                            No especificado
-                        </option>
-                    </select>
+                    <label>Sexo</label>
+
+                    <input
+                        type="hidden"
+                        name="sexo"
+                        x-model="sexo"
+                    >
+
+                    <div class="custom-select form-custom-select" @click.outside="sexoDropdownAbierto = false">
+                        <button
+                            type="button"
+                            class="custom-select-button"
+                            @click="sexoDropdownAbierto = !sexoDropdownAbierto"
+                        >
+                            <span x-text="sexoTexto()"></span>
+                            <span class="custom-select-arrow">▾</span>
+                        </button>
+
+                        <div
+                            class="custom-select-menu"
+                            x-show="sexoDropdownAbierto"
+                            x-cloak
+                        >
+                            <button
+                                type="button"
+                                class="custom-select-option"
+                                @click="seleccionarSexo('masculino')"
+                            >
+                                Masculino
+                            </button>
+
+                            <button
+                                type="button"
+                                class="custom-select-option"
+                                @click="seleccionarSexo('femenino')"
+                            >
+                                Femenino
+                            </button>
+
+                            <button
+                                type="button"
+                                class="custom-select-option"
+                                @click="seleccionarSexo('no_especificado')"
+                            >
+                                No especificado
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -320,7 +379,7 @@ $idPuestoSeleccionado = (int) ($old['id_puesto'] ?? $empleado['id_puesto'] ?? 0)
                     Cancelar
                 </a>
 
-                <button class="btn btn-primary" type="submit">
+                <button class="btn btn-warning" type="submit">
                     Guardar cambios
                 </button>
             </div>

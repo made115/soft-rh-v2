@@ -77,7 +77,7 @@ function formatoAccionEmpleado(string $accion): string
 
 <h1 class="page-title">Detalle del empleado</h1>
 
-<section class="panel-card">
+<section class="panel-card empleado-detail-page">
     <?php if (!$empleado): ?>
         <div class="alert-error">
             No se encontró información del empleado.
@@ -195,9 +195,9 @@ function formatoAccionEmpleado(string $accion): string
 
             <div>
                 <?php if ($empleado['estado_laboral'] === 'activo'): ?>
-                    <span class="badge badge-activo">Activo</span>
+                    <span class="badge badge-activo estado-detalle-badge">Activo</span>
                 <?php else: ?>
-                    <span class="badge badge-inactivo">Inactivo</span>
+                    <span class="badge badge-inactivo estado-detalle-badge">Inactivo</span>
                 <?php endif; ?>
             </div>
         </div>
@@ -308,7 +308,7 @@ function formatoAccionEmpleado(string $accion): string
                 </div>
             <?php else: ?>
                 <div class="table-box">
-                    <table class="data-table">
+                    <table class="data-table empleado-history-table">
                         <thead>
                             <tr>
                                 <th>Fecha alta</th>
@@ -342,7 +342,7 @@ function formatoAccionEmpleado(string $accion): string
                                         <?php endif; ?>
                                     </td>
 
-                                    <td class="text-left">
+                                    <td class="motivo-baja-cell">
                                         <?= mostrarDatoEmpleado($historial['motivo_baja']) ?>
                                     </td>
 
@@ -361,16 +361,16 @@ function formatoAccionEmpleado(string $accion): string
             <?php endif; ?>
         </div>
 
-        <div class="module-actions module-actions-footer">
-            <a class="btn btn-secondary" href="<?= base_url('empleados') ?>">
+        <div class="module-actions module-actions-footer detail-footer-actions">
+            <a class="btn btn-secondary detail-footer-btn" href="<?= base_url('empleados') ?>">
                 Volver al listado
             </a>
 
-            <a class="btn btn-primary" href="<?= base_url('empleados/editar?id=' . (int) $empleado['id_empleado']) ?>">
+            <a class="btn btn-warning detail-footer-btn" href="<?= base_url('empleados/editar?id=' . (int) $empleado['id_empleado']) ?>">
                 Editar empleado
             </a>
 
-            <a class="btn btn-secondary" href="<?= base_url('empleados/estado?id=' . (int) $empleado['id_empleado']) ?>">
+            <a class="btn btn-warning detail-footer-btn" href="<?= base_url('empleados/estado?id=' . (int) $empleado['id_empleado']) ?>">
                 Cambiar estado
             </a>
         </div>
