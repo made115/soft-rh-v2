@@ -56,6 +56,13 @@ require_once __DIR__ . '/../layouts/private_header.php';
         </div>
     <?php else: ?>
         <div class="form-card form-card-wide">
+
+            <?php if (isset($_GET['pdf_bloqueado'])): ?>
+                <div class="alert-error">
+                    No se puede generar PDF para un contrato cancelado.
+                </div>
+            <?php endif; ?>
+            
             <?php if (isset($_GET['correccion_bloqueada'])): ?>
                 <div class="alert-error">
                     Este contrato ya tiene PDF generado, por lo que no puede corregirse directamente. Si se requiere un cambio, deberá generarse una nueva versión o realizar una renovación según corresponda.

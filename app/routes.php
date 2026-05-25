@@ -41,3 +41,4 @@ $router->get('/contratos/editar', 'ContratoController@edit');
 $router->post('/contratos/actualizar', 'ContratoController@update');
 $router->get('/contratos/historial', 'ContratoController@historial');
 $router->get('/contratos/movimientos', 'ContratoController@movimientos');
+$router->get('/contratos/pdf', 'ContratoController@pdf');

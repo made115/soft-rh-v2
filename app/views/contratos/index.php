@@ -394,9 +394,19 @@ require_once __DIR__ . '/../layouts/private_header.php';
                                         </span>
                                     <?php endif; ?>
 
-                                    <span class="btn-table btn-table-disabled">
-                                        PDF
-                                    </span>
+                                    <?php if ($tieneContratoVigente): ?>
+                                        <a
+                                            class="btn-table btn-table-state"
+                                            href="<?= base_url('contratos/pdf?id=' . (int) $empleadoItem['id_contrato']) ?>"
+                                            title="Generar o descargar PDF del contrato"
+                                        >
+                                            PDF
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="btn-table btn-table-disabled">
+                                            PDF
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>

@@ -102,6 +102,7 @@ class Contrato
                 e.curp,
                 e.rfc,
                 e.nss,
+                e.numero_preafiliacion_imss,
                 e.fecha_ingreso,
                 e.estado_laboral,
                 p.nombre_puesto,
@@ -361,6 +362,83 @@ class Contrato
         $resultado = $stmt->fetch();
 
         return $resultado && (int) $resultado['total'] > 0;
+    }
+
+    public function getPdfActivo(int $id_contrato): ?array
+    {
+        $sql = "
+            SELECT
+                id_pdf_contrato,
+                id_contrato,
+                nombre_archivo,
+                mime_type,
+                archivo_pdf,
+                version_pdf,
+                estado,
+                fecha_carga
+            FROM pdf_contratos
+            WHERE id_contrato = :id_contrato
+            AND estado = 'activo'
+            ORDER BY version_pdf DESC, id_pdf_contrato DESC
+            LIMIT 1
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_contrato', $id_contrato, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $pdf = $stmt->fetch();
+
+        return $pdf ?: null;
+    }
+
+    public function guardarPdfContrato(
+        int $id_contrato,
+        int $id_usuario,
+        string $nombre_archivo,
+        string $contenido_pdf
+    ): int {
+        $this->db->beginTransaction();
+
+        try {
+            $sql = "
+                INSERT INTO pdf_contratos (
+                    id_contrato,
+                    id_usuario_carga,
+                    nombre_archivo,
+                    mime_type,
+                    archivo_pdf,
+                    version_pdf,
+                    estado
+                ) VALUES (
+                    :id_contrato,
+                    :id_usuario_carga,
+                    :nombre_archivo,
+                    'application/pdf',
+                    :archivo_pdf,
+                    1,
+                    'activo'
+                )
+            ";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':id_contrato', $id_contrato, PDO::PARAM_INT);
+            $stmt->bindValue(':id_usuario_carga', $id_usuario, PDO::PARAM_INT);
+            $stmt->bindValue(':nombre_archivo', $nombre_archivo);
+            $stmt->bindValue(':archivo_pdf', $contenido_pdf, PDO::PARAM_LOB);
+            $stmt->execute();
+
+            $id_pdf_contrato = (int) $this->db->lastInsertId();
+
+            $this->registrarBitacora($id_contrato, $id_usuario, 'pdf_generado');
+
+            $this->db->commit();
+
+            return $id_pdf_contrato;
+        } catch (Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 
     private function registrarBitacora(int $id_contrato, int $id_usuario, string $accion): void

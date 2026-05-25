@@ -285,6 +285,71 @@ class ContratoController extends Controller
         ]);
     }
 
+    public function pdf(): void
+    {
+        require_role(['administrador', 'recursos_humanos']);
+
+        $id_contrato = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+        if ($id_contrato <= 0) {
+            $this->redirect('contratos');
+        }
+
+        $contratoModel = new Contrato();
+        $contrato = $contratoModel->getById($id_contrato);
+
+        if (!$contrato) {
+            $this->redirect('contratos');
+        }
+
+        if ($contrato['estado_contrato'] === 'cancelado') {
+            $this->redirect('contratos/movimientos?id=' . $id_contrato . '&pdf_bloqueado=1');
+        }
+
+        $pdfActivo = $contratoModel->getPdfActivo($id_contrato);
+
+        if ($pdfActivo) {
+            $this->descargarPdf(
+                $pdfActivo['nombre_archivo'],
+                $pdfActivo['mime_type'],
+                $pdfActivo['archivo_pdf']
+            );
+        }
+
+        $autoload = dirname(__DIR__, 2) . '/vendor/autoload.php';
+
+        if (!file_exists($autoload)) {
+            die('No se encontró vendor/autoload.php. Verifica que Dompdf esté instalado con Composer.');
+        }
+
+        require_once $autoload;
+
+        $html = $this->renderContratoPdfHtml($contrato);
+
+        $options = new \Dompdf\Options();
+        $options->set('isRemoteEnabled', true);
+        $options->set('defaultFont', 'DejaVu Sans');
+
+        $dompdf = new \Dompdf\Dompdf($options);
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->setPaper('letter', 'portrait');
+        $dompdf->render();
+
+        $contenidoPdf = $dompdf->output();
+        $nombreArchivo = $this->generarNombreArchivoContrato($contrato);
+
+        $usuarioSesion = current_user();
+
+        $contratoModel->guardarPdfContrato(
+            $id_contrato,
+            (int) $usuarioSesion['id_usuario'],
+            $nombreArchivo,
+            $contenidoPdf
+        );
+
+        $this->descargarPdf($nombreArchivo, 'application/pdf', $contenidoPdf);
+    }
+
     private function obtenerDatosFormulario(int $id_empleado): array
     {
         $sueldo_diario = str_replace(',', '.', trim($_POST['sueldo_diario'] ?? ''));
@@ -359,5 +424,57 @@ class ContratoController extends Controller
         return (new DateTimeImmutable($fecha_fin_anterior))
             ->modify('+1 day')
             ->format('Y-m-d');
+    }
+
+    private function renderContratoPdfHtml(array $contrato): string
+    {
+        ob_start();
+
+        require dirname(__DIR__) . '/views/pdf/contrato.php';
+
+        return ob_get_clean();
+    }
+
+    private function generarNombreArchivoContrato(array $contrato): string
+    {
+        $nombreEmpleado = trim(
+            ($contrato['nombre_empleado'] ?? '') . '_' .
+            ($contrato['apellido_pat_empleado'] ?? '') . '_' .
+            ($contrato['apellido_mat_empleado'] ?? '')
+        );
+
+        $nombreEmpleado = strtr($nombreEmpleado, [
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+            'Ñ' => 'N', 'ñ' => 'n',
+            'Ü' => 'U', 'ü' => 'u'
+        ]);
+
+        $nombreEmpleado = strtolower($nombreEmpleado);
+        $nombreEmpleado = preg_replace('/[^a-z0-9_]+/', '_', $nombreEmpleado);
+        $nombreEmpleado = preg_replace('/_+/', '_', $nombreEmpleado);
+        $nombreEmpleado = trim($nombreEmpleado, '_');
+
+        if ($nombreEmpleado === '') {
+            $nombreEmpleado = 'empleado';
+        }
+
+        return 'contrato_' . (int) $contrato['id_contrato'] . '_' . $nombreEmpleado . '.pdf';
+    }
+
+    private function descargarPdf(string $nombreArchivo, string $mimeType, string $contenidoPdf): void
+    {
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: ' . $mimeType);
+        header('Content-Disposition: attachment; filename="' . basename($nombreArchivo) . '"');
+        header('Content-Length: ' . strlen($contenidoPdf));
+        header('Cache-Control: private, max-age=0, must-revalidate');
+        header('Pragma: public');
+
+        echo $contenidoPdf;
+        exit;
     }
 }

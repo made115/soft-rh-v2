@@ -336,13 +336,14 @@ require_once __DIR__ . '/../layouts/private_header.php';
                                                     </span>
                                                 <?php endif; ?>
 
-                                                <span
-                                                    class="btn-table btn-table-disabled"
+                                                <a
+                                                    class="btn-table btn-table-state"
+                                                    href="<?= base_url('contratos/pdf?id=' . (int) $contrato['id_contrato']) ?>"
                                                     style="min-width: 80px; padding: 10px 14px;"
-                                                    title="Generar PDF"
+                                                    title="<?= !empty($contrato['id_pdf_contrato']) ? 'Descargar PDF' : 'Generar PDF' ?>"
                                                 >
                                                     PDF
-                                                </span>
+                                                </a>
 
                                                 <a
                                                     class="btn-table btn-table-state"
